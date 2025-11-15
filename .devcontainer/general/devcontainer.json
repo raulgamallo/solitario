@@ -1,0 +1,23 @@
+{
+  "name": "general",
+  "dockerComposeFile": "../../compose.yaml",
+  "service": "general",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-ossdata.vscode-pgsql",
+        "esbenp.prettier-vscode",
+        "ms-vsliveshare.vsliveshare",
+        "ms-vscode.live-server",
+        "ritwickdey.liveserver",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        "pkief.material-icon-theme",
+        "redhat.vscode-yaml",
+        "bmewburn.vscode-intelephense-client"
+      ]
+    }
+  }
+}
