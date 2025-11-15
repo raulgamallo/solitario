@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "pkief.material-icon-theme",
+    "ms-vscode.live-server",
+    "esbenp.prettier-vscode",
+    "ms-azuretools.vscode-docker",
+    "ritwickdey.liveserver"
+  ],
+  "unwantedRecommendations": []
+}
