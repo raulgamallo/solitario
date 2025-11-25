@@ -1,4 +1,12 @@
 services:
+  general:
+    build: .devcontainer/general
+    container_name: general
+    volumes:
+      - ./:/workspace:cached,rw
+    tty: true
+    stdin_open: true
+    
   db:
     image: postgres:latest
     container_name: db
