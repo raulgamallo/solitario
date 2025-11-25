@@ -1,5 +1,6 @@
 {
   "recommendations": [
+    "ms-vscode-remote.remote-containers",
     "pkief.material-icon-theme",
     "ms-vscode.live-server",
     "esbenp.prettier-vscode",
