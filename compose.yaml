@@ -22,8 +22,12 @@ services:
   php:
     build: ./docker/php
     container_name: php
+    env_file:
+      - .env
     volumes:
       - ./src:/var/www/html
+    expose:
+      - 9000
 
   nginx:
     image: nginx:latest
