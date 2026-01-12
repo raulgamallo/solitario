@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         try {
             // Buscamos el usuario por nombre de usuario
-            $sql = "SELECT id, username, password_hash FROM users WHERE username = $1";
+            $sql = "SELECT id, username, email, password_hash FROM users WHERE username = $1";
             $params = [$username];
             
             $result = $postgres->query($sql, $params);
@@ -34,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['loggedin'] = true;
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
                     
                     header("Location: menu.php");
                     exit();
