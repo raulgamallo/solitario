@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="../css/game.css">
     <title>Game</title>
 </head>
 
@@ -32,7 +32,7 @@
             <div id="tabla-6" class="column"></div>
         </div>
     </div>
-    <script src="/js/game.js"></script>
+    <script src="../js/game.js"></script>
 </body>
 
 </html>
