@@ -15,6 +15,10 @@
     <main id="game-board" aria-label="Tablero de solitario">
         <section class="hud" aria-label="Indicadores de partida">
             <div class="hud-item">
+                <span class="label">Tiempo</span>
+                <span id="timer" class="value">00:00</span>
+            </div>
+            <div class="hud-item">
                 <span class="label">Movimientos</span>
                 <span id="moves" class="value">0</span>
             </div>

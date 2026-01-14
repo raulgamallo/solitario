@@ -19,13 +19,17 @@ let moves = 0;
 let finished = false;
 
 // DOM refs (cached once)
-let $stock, $waste, $foundations, $tableau, $moves, $modal, $endTitle, $endSummary, $dragLayer;
+let $stock, $waste, $foundations, $tableau, $moves, $timer, $modal, $endTitle, $endSummary, $dragLayer;
 
 // Drag state
 let dragData = null;
 let dragRAF = null;
-let dragX = 0;
-let dragY = 0;
+let dragX = 0, dragY = 0;
+
+// Timer state
+let startTime = 0;
+let timerInterval = null;
+let gameStarted = false;
 
 // Card element pool
 const cardPool = new Map();
@@ -42,6 +46,7 @@ $waste = document.getElementById('waste');
 $foundations = document.querySelectorAll('[data-dropzone="foundation"]');
 $tableau = document.querySelectorAll('[data-dropzone="tableau"]');
 $moves = document.getElementById('moves');
+$timer = document.getElementById('timer');
 $modal = document.getElementById('endModal');
 $endTitle = document.getElementById('endTitle');
 $endSummary = document.getElementById('endSummary');
@@ -91,9 +96,29 @@ waste = [];
 foundations = [[], [], [], []];
 moves = 0;
 finished = false;
+gameStarted = false;
+
+// Reset timer display
+if (timerInterval) clearInterval(timerInterval);
+timerInterval = null;
+$timer.textContent = '00:00';
 
 render();
 $modal.classList.add('hidden');
+}
+
+function startGame() {
+if (gameStarted) return;
+gameStarted = true;
+startTime = Date.now();
+timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+const delta = Math.floor((Date.now() - startTime) / 1000);
+const m = Math.floor(delta / 60).toString().padStart(2, '0');
+const s = (delta % 60).toString().padStart(2, '0');
+$timer.textContent = `${m}:${s}`;
 }
 
 function shuffleArray(arr) {
@@ -123,12 +148,20 @@ if ($stockBack.parentNode) $stockBack.remove();
 }
 }
 
-function renderWaste() {
+function renderWaste(animate = false) {
 $waste.textContent = '';
 if (!waste.length) return;
 const card = waste[waste.length - 1];
 const el = getCardEl(card);
 applyCardStyle(el, card, 0, 'waste', null, waste.length - 1, null);
+if (animate) {
+el.classList.remove('flip-in');
+// force reflow
+void el.offsetWidth;
+el.classList.add('flip-in');
+} else {
+el.classList.remove('flip-in');
+}
 $waste.appendChild(el);
 }
 
@@ -210,11 +243,14 @@ el._foundation = foundation;
 
 function onStockClick() {
 if (finished) return;
+startGame();
 if (stock.length) {
 const card = stock.pop();
 card.faceUp = true;
 waste.push(card);
 moves++;
+renderStock();
+renderWaste(true);
 } else if (waste.length) {
 while (waste.length) {
 const c = waste.pop();
@@ -222,9 +258,9 @@ c.faceUp = false;
 stock.push(c);
 }
 moves++;
-}
 renderStock();
 renderWaste();
+}
 $moves.textContent = moves;
 setTimeout(checkEnd, 0); // Non-blocking check
 }
@@ -313,6 +349,7 @@ const target = document.elementFromPoint(e.clientX, e.clientY);
 const dropZone = target?.closest('[data-dropzone]');
 
 if (dropZone && tryMove(dropZone)) {
+startGame();
 moves++;
 $moves.textContent = moves;
 setTimeout(checkEnd, 0);
@@ -433,13 +470,16 @@ return false;
 
 function endGame(won) {
 finished = true;
+if (timerInterval) clearInterval(timerInterval);
+const duration = Math.floor((Date.now() - startTime));
+
 $endTitle.textContent = won ? '¡Victoria!' : 'Sin movimientos';
-$endSummary.textContent = `Movimientos: ${moves}`;
+$endSummary.textContent = `Movimientos: ${moves} | Tiempo: ${$timer.textContent}`;
 $modal.classList.remove('hidden');
 fetch('../controllers/game.php', {
 method: 'POST',
 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-body: `result=${won ? 'victoria' : 'derrota'}&moves=${moves}`
+body: `result=${won ? 'victoria' : 'derrota'}&moves=${moves}&timeMs=${duration}`
 }).catch(() => {});
 }
 })();

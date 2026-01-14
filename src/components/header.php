@@ -1,8 +1,16 @@
-<header>
-    <button id="homeButton">Home</button>
-    <h1>Solitar.io</h1>
-    <div>
-        <button id="profileButton"><img src="" alt="pfp"></button>
+<header class="app-header">
+    <div class="header-left">
+        <button id="homeButton" class="icon-button ghost" aria-label="Ir al inicio">
+            <span class="icon-dot"></span>
+            <span class="sr-only">Inicio</span>
+        </button>
+        <h1 class="brand">Solitar.io</h1>
+    </div>
+    <div class="header-actions">
+        <button id="profileButton" class="icon-button ghost" aria-label="Ir al perfil">
+            <span class="avatar-circle" aria-hidden="true"></span>
+            <span class="sr-only">Perfil</span>
+        </button>
     </div>
     <script>
         document.getElementById('homeButton').onclick = function() {
