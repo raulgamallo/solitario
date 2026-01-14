@@ -23,6 +23,9 @@ let $stock, $waste, $foundations, $tableau, $moves, $modal, $endTitle, $endSumma
 
 // Drag state
 let dragData = null;
+let dragRAF = null;
+let dragX = 0;
+let dragY = 0;
 
 // Card element pool
 const cardPool = new Map();
@@ -142,13 +145,26 @@ slot.appendChild(el);
 
 function renderColumn(colIdx) {
 const col = $tableau[colIdx];
-col.textContent = '';
 const pile = tableau[colIdx];
+
+// Sync DOM children with pile
+// Remove extras
+while (col.children.length > pile.length) {
+col.lastChild.remove();
+}
+
 for (let i = 0; i < pile.length; i++) {
 const card = pile[i];
 const el = getCardEl(card);
-applyCardStyle(el, card, i * CARD_OFFSET, 'tableau', colIdx, i, null);
+// Ensure correct element is at position i
+if (col.children[i] !== el) {
+if (i < col.children.length) {
+col.insertBefore(el, col.children[i]);
+} else {
 col.appendChild(el);
+}
+}
+applyCardStyle(el, card, i * CARD_OFFSET, 'tableau', colIdx, i, null);
 }
 }
 
@@ -157,6 +173,7 @@ let el = cardPool.get(card.id);
 if (!el) {
 el = document.createElement('div');
 el.className = 'card';
+el.style.top = '0'; // Ensure compatible with translate3d
 el.addEventListener('pointerdown', onCardDown);
 cardPool.set(card.id, el);
 }
@@ -170,7 +187,13 @@ if (el._img !== img) {
 el.style.backgroundImage = `url(${img})`;
 el._img = img;
 }
-el.style.top = top + 'px';
+
+// Position optimization: use transform
+if (el._top !== top) {
+el.style.transform = `translate3d(0, ${top}px, 0)`;
+el._top = top;
+}
+
 el.classList.toggle('face-down', !card.faceUp);
 
 // Store meta for drag
@@ -203,7 +226,7 @@ moves++;
 renderStock();
 renderWaste();
 $moves.textContent = moves;
-checkEnd();
+setTimeout(checkEnd, 0); // Non-blocking check
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -238,7 +261,7 @@ for (let i = 0; i < cards.length; i++) {
 const c = cards[i];
 const g = document.createElement('div');
 g.className = 'card';
-g.style.cssText = `background-image:url(${c.img});top:${i * CARD_OFFSET}px`;
+g.style.cssText = `background-image:url(${c.img});top:${i * CARD_OFFSET}px;pointer-events:none`;
 ghost.appendChild(g);
 }
 $dragLayer.appendChild(ghost);
@@ -262,12 +285,25 @@ document.addEventListener('pointerup', onDragEnd);
 
 function onDragMove(e) {
 if (!dragData) return;
-dragData.ghost.style.transform = `translate(${e.clientX - dragData.offsetX}px,${e.clientY - dragData.offsetY}px)`;
+dragX = e.clientX;
+dragY = e.clientY;
+
+if (dragRAF) return;
+
+dragRAF = requestAnimationFrame(() => {
+dragRAF = null;
+if (!dragData) return;
+dragData.ghost.style.transform = `translate3d(${dragX - dragData.offsetX}px,${dragY - dragData.offsetY}px, 0)`;
+});
 }
 
 function onDragEnd(e) {
 document.removeEventListener('pointermove', onDragMove);
 document.removeEventListener('pointerup', onDragEnd);
+if (dragRAF) {
+cancelAnimationFrame(dragRAF);
+dragRAF = null;
+}
 if (!dragData) return;
 
 clearHighlights();
@@ -279,7 +315,7 @@ const dropZone = target?.closest('[data-dropzone]');
 if (dropZone && tryMove(dropZone)) {
 moves++;
 $moves.textContent = moves;
-checkEnd();
+setTimeout(checkEnd, 0);
 }
 
 dragData = null;
