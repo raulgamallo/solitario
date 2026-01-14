@@ -5,7 +5,7 @@ const SUITS = ['corazones', 'diamantes', 'picas', 'trevoles'];
 const RED_SUITS = new Set(['corazones', 'diamantes']);
 const ASSETS = '../assets/baraja_Francesa';
 const BACK_IMG = `${ASSETS}/Reverso1.svg`;
-const CARD_OFFSET = 28;
+const CARD_OFFSET = 20;
 
 // Pre-compute rank labels
 const RANK_LABELS = ['', 'AS', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
@@ -101,31 +101,32 @@ gameStarted = false;
 // Reset timer display
 if (timerInterval) clearInterval(timerInterval);
 timerInterval = null;
-$timer.textContent = '00:00';
+    $timer.textContent = '00:00.000';
 
-render();
-$modal.classList.add('hidden');
+    render();
+    $modal.classList.add('hidden');
 }
 
 function startGame() {
-if (gameStarted) return;
-gameStarted = true;
-startTime = Date.now();
-timerInterval = setInterval(updateTimer, 1000);
+    if (gameStarted) return;
+    gameStarted = true;
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 31);
 }
 
 function updateTimer() {
-const delta = Math.floor((Date.now() - startTime) / 1000);
-const m = Math.floor(delta / 60).toString().padStart(2, '0');
-const s = (delta % 60).toString().padStart(2, '0');
-$timer.textContent = `${m}:${s}`;
+    const diff = Date.now() - startTime;
+    const m = Math.floor(diff / 60000).toString().padStart(2, '0');
+    const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+    const ms = (diff % 1000).toString().padStart(3, '0');
+    $timer.textContent = `${m}:${s}.${ms}`;
 }
 
 function shuffleArray(arr) {
-for (let i = arr.length - 1; i > 0; i--) {
-const j = (Math.random() * (i + 1)) | 0;
-[arr[i], arr[j]] = [arr[j], arr[i]];
-}
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = (Math.random() * (i + 1)) | 0;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -292,7 +293,7 @@ return;
 const rect = el.getBoundingClientRect();
 const ghost = document.createElement('div');
 ghost.className = 'drag-ghost';
-ghost.style.cssText = `transform:translate(${rect.left}px,${rect.top}px)`;
+ghost.style.cssText = `transform:translate(${rect.left}px,${rect.top}px); width: ${rect.width}px; height: ${rect.height}px`;
 for (let i = 0; i < cards.length; i++) {
 const c = cards[i];
 const g = document.createElement('div');
