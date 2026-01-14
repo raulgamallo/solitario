@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #006400; /* Green felt color */
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+#game-board {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+}
+
+.top-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    height: 140px;
+}
+
+.tableau-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pile, .column {
+    width: 100px;
+    min-height: 140px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.pile {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+/* Card Styling */
+.card {
+    width: 100px; /* Adjust based on image aspect ratio usually 2.5 x 3.5 inches ~ 5:7 */
+    height: 145px; 
+    position: absolute;
+    border-radius: 5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: grab;
+    transition: transform 0.1s;
+    background-color: transparent; /* SVG should handle transparency */
+}
+
+
+.card.dragging {
+    cursor: grabbing;
+    z-index: 1000 !important;
+    pointer-events: none; /* Let events pass through to drop targets if using mousemove */
+}
+
+/* Highlight drop target */
+.drag-over {
+    box-shadow: 0 0 10px 5px rgba(255, 255, 0, 0.5);
+}
+.timer{
+    color: white; font-size: 20px; font-weight: bold; margin: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .pile, .column, .card {
+        width: 11vw;
+        height: 16vw;
+    }
+    .top-section {
+        height: 17vw;
+    }
+}

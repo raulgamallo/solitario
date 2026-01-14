@@ -36,13 +36,17 @@ class Postgres
         }
     }
 
-    public function query($sql)
+    public function query($sql, $params = [])
     {
         if (!$this->connection) {
             throw new Exception("No active database connection.");
         }
 
-        $result = pg_query($this->connection, $sql);
+        if (empty($params)) {
+            $result = pg_query($this->connection, $sql);
+        } else {
+            $result = pg_query_params($this->connection, $sql, $params);
+        }
 
         if (!$result) {
             throw new Exception("Query failed: " . pg_last_error($this->connection));
