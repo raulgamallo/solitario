@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700&display=swap');
+
+:root {
+    --felt: #0f6b3d;
+    --felt-dark: #0a4629;
+    --felt-glow: #2fbf71;
+    --card-front: #0e4a2b;
+    --card-border: #d9e2d2;
+    --accent-gold: #f5d364;
+    --accent-light: #c5e8d2;
+    --text-strong: #f4f7f5;
+    --text-muted: #c6d3c0;
+    --shadow-strong: 0 18px 55px rgba(0, 0, 0, 0.35);
+    --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.2);
+    --success: #7ed889;
+    --danger: #ff6b6b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+    background: radial-gradient(circle at 20% 20%, #126b3c, #0a3c24 48%, #072919 100%);
+    color: var(--text-strong);
+}
+
+button {
+    background: linear-gradient(135deg, var(--accent-gold), #f8e7a6);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: var(--shadow-strong);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button.ghost {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-strong);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: none;
+}

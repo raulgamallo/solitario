@@ -1,83 +1,254 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #006400; /* Green felt color */
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
+.game-body {
     min-height: 100vh;
+    backdrop-filter: blur(4px);
 }
 
 #game-board {
-    width: 100%;
-    max-width: 1000px;
-    padding: 20px;
+    width: min(1200px, calc(100% - 32px));
+    margin: 28px auto 48px;
+    padding: 18px 20px 28px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    box-shadow: var(--shadow-strong);
+}
+
+.hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+}
+
+.hud-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.hud .label {
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.hud .value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+.hud-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
 }
 
 .top-section {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-    height: 140px;
+    align-items: center;
+    gap: 18px;
+    margin: 22px 0 12px;
+}
+
+.stock-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.foundation-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    flex: 1;
+    justify-items: end;
 }
 
 .tableau-section {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    padding-top: 8px;
 }
 
-.pile, .column {
-    width: 100px;
-    min-height: 140px;
-    border-radius: 5px;
-    box-sizing: border-box;
+.pile,
+.column {
+    width: 112px;
+    min-height: 156px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
     position: relative;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+    overflow: visible;
 }
 
-.pile {
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.spacer {
-    flex-grow: 1;
-}
-
-/* Card Styling */
-.card {
-    width: 100px; /* Adjust based on image aspect ratio usually 2.5 x 3.5 inches ~ 5:7 */
-    height: 145px; 
+.pile::after,
+.column::after {
+    content: "";
     position: absolute;
-    border-radius: 5px;
+    inset: 4px;
+    border-radius: 10px;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+    pointer-events: none;
+}
+
+.column {
+    padding-top: 8px;
+}
+
+.pile.stock {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    cursor: pointer;
+}
+
+.pile.waste {
+    border-style: solid;
+}
+
+.pile.foundation {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.card {
+    width: 112px;
+    height: 160px;
+    position: absolute;
+    left: 0;
+    border-radius: 12px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
     cursor: grab;
-    transition: transform 0.1s;
-    background-color: transparent; /* SVG should handle transparency */
 }
 
+.card.face-down {
+    filter: saturate(0.9);
+}
 
 .card.dragging {
     cursor: grabbing;
-    z-index: 1000 !important;
-    pointer-events: none; /* Let events pass through to drop targets if using mousemove */
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
 }
 
-/* Highlight drop target */
-.drag-over {
-    box-shadow: 0 0 10px 5px rgba(255, 255, 0, 0.5);
-}
-.timer{
-    color: white; font-size: 20px; font-weight: bold; margin: auto;
+.card.placeholder {
+    opacity: 0.1;
+    filter: grayscale(1);
+    pointer-events: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 800px) {
-    .pile, .column, .card {
-        width: 11vw;
-        height: 16vw;
+.hint-target {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 2px var(--accent-gold), 0 8px 20px rgba(245, 211, 100, 0.3);
+}
+
+.drop-hover {
+    box-shadow: 0 0 0 2px var(--accent-gold), 0 10px 26px rgba(245, 211, 100, 0.4);
+}
+
+#drag-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3000;
+}
+
+.drag-ghost {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.drag-ghost .card {
+    position: absolute;
+    left: 0;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4000;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #0c4227, #0b301d);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 22px 24px;
+    width: min(400px, 90%);
+    box-shadow: var(--shadow-strong);
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin: 0 0 8px;
+}
+
+.modal-content p {
+    margin: 0 0 16px;
+    color: var(--text-muted);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.flip-in {
+    animation: flipIn 320ms ease;
+    transform-style: preserve-3d;
+}
+
+@keyframes flipIn {
+    0% {
+        transform: rotateY(-90deg) translateY(-6px);
+        opacity: 0;
     }
-    .top-section {
-        height: 17vw;
+    60% {
+        transform: rotateY(8deg) translateY(2px);
+    }
+    100% {
+        transform: rotateY(0deg) translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 960px) {
+    #game-board {
+        width: calc(100% - 12px);
+    }
+
+    .pile,
+    .column,
+    .card {
+        width: 13vw;
+        height: 18vw;
     }
 }
