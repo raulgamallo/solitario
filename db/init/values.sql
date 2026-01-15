@@ -200,3 +200,20 @@ INSERT INTO users (email, username, password_hash, pfp) VALUES
 ('user198@example.com', 'user198', 'hash198', '/pfp/user198.png'),
 ('user199@example.com', 'user199', 'hash199', NULL),
 ('user200@example.com', 'user200', 'hash200', '/pfp/user200.png');
+
+-- Generar una partida aleatoria para cada usuario de ejemplo
+INSERT INTO games (user_uuid, movements, started, finished)
+WITH random_times AS (
+    SELECT 
+        uuid,
+        NOW() - (random() * interval '30 days') as game_start
+    FROM users 
+    WHERE username LIKE 'user%'
+)
+SELECT 
+    uuid,
+    floor(random() * 300 + 80)::int, -- Entre 80 y 380 movimientos
+    game_start,
+    game_start + (random() * interval '45 minutes' + interval '5 minutes') -- Duración entre 5 y 50 mins
+FROM random_times;
+
