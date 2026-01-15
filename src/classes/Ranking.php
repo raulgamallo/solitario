@@ -46,7 +46,6 @@ class Ranking
              $data = $this->postgres->query($sql);
              return $data ?: [];
         } catch (Exception $e) {
-            // Log error or handle it
             return [];
         } finally {
             $this->postgres->disconnect();

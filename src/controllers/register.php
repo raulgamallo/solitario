@@ -6,7 +6,6 @@ require_once __DIR__ . '/../classes/User.php';
 use Firebase\JWT\JWT;
 use Dotenv\Dotenv;
 
-// Initialize Dotenv if needed
 if (!getenv('JWT_SECRET')) {
     $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
     $dotenv->load();
@@ -17,18 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     try {
         $userRegister = UserRegisterDTO::fromRequest($_POST);
         
-        // Basic validation
         if (empty($userRegister->email) || empty($userRegister->username) || empty($userRegister->password)) {
              $errors[] = "Todos los campos son obligatorios.";
         }
 
-        // Check if image folder exists
         $uploadDir = __DIR__ . "/../assets/pfp/";
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
-        // Validate pfp
         $pfp = $_FILES["pfp"] ?? null;
         $destination = null;
         if (isset($pfp) && $pfp['error'] === UPLOAD_ERR_OK) {
@@ -39,11 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
         }
 
         if (empty($errors)) {
-            // Save user to DB
             global $postgres;
             $postgres->connect();
             
-            // Check if user exists
             $emailEscaped = $postgres->escapeLiteral($userRegister->email);
             $check = $postgres->query("SELECT uuid FROM users WHERE email = '$emailEscaped'");
             if ($check && count($check) > 0) {
@@ -51,20 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             }
             
             $usernameEscaped = $postgres->escapeLiteral($userRegister->username);
-            $passwordHash = $userRegister->password; // Already hashed in DTO
+            $passwordHash = $userRegister->password;
 
             $query = "INSERT INTO users (email, username, password_hash) VALUES ('{$emailEscaped}', '{$usernameEscaped}', '{$passwordHash}') RETURNING uuid";
             $result = $postgres->query($query);
             $uuid = $result[0]['uuid'];
 
-            // Save pfp with uuid as filename
             if (isset($pfp) && $pfp['error'] === UPLOAD_ERR_OK) {
                 $ext = pathinfo($pfp['name'], PATHINFO_EXTENSION);
                 $filename = $uuid . '.' . $ext;
                 $destinationPath = $uploadDir . $filename;
                 if (move_uploaded_file($pfp['tmp_name'], $destinationPath)) {
-                    // Update user with pfp path
-                    $pfpWebPath = "/assets/pfp/" . $filename; // Web accessible path
+                    $pfpWebPath = "/assets/pfp/" . $filename;
                     $postgres->query("UPDATE users SET pfp = '$pfpWebPath' WHERE uuid = '$uuid'");
                     $destination = $pfpWebPath;
                 }
@@ -72,14 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             
             $postgres->disconnect();
 
-            // Create JWT and set it as cookie
             $jwtSecret = getenv('JWT_SECRET');
             if (!$jwtSecret) {
                 throw new RuntimeException('JWT secret not configured.');
             }
 
             $issuedAt = time();
-            $expiresAt = $issuedAt + (15 * 60); // 15 minutes
+            $expiresAt = $issuedAt + (15 * 60);
 
             $payload = [
                 'uuid' => $uuid,
@@ -101,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             header("Location: /views/menu.php");
             exit;
         } else {
-             // Redirect back with errors (could be improved with session errors)
              $_SESSION['register_errors'] = $errors;
              header("Location: /views/register.php");
              exit;

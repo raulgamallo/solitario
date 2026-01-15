@@ -124,7 +124,6 @@
     border-bottom: none;
 }
 
-/* Specific column styles */
 .ranking-table td:first-child {
     font-weight: 700;
     color: var(--accent-gold);

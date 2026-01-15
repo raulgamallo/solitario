@@ -25,7 +25,6 @@ class GameStats
     public function getLastGames(string $userUuid, int $limit = 10): array {
         $this->db->connect();
         $userUuid = $this->db->escapeLiteral($userUuid);
-        // Seleccionamos las últimas partidas, pero luego las invertimos para que el gráfico vaya de pasado a futuro
         $sql = "SELECT movements, started, finished, 
                 EXTRACT(EPOCH FROM (finished - started)) as duration_seconds
                 FROM games 

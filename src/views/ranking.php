@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../classes/Ranking.php';
 
-// $postgres is instantiated in Postgres.php which is required by Ranking.php
 global $postgres;
 
 $ranking = new Ranking($postgres);
@@ -78,10 +77,14 @@ function getSortIndicator($column, $currentSort, $currentOrder) {
                                 <td><?= $index + 1 ?></td>
                                 <td><?= htmlspecialchars($game['username'] ?? 'Anónimo') ?></td>
                                 <td><?= htmlspecialchars($game['duration_formatted'] ?? '-') ?></td>
-                                <td><?= htmlspecialchars($game['movements']) ?></td>
+                                <td><?= htmlspecialchars($game['movements'] ?? '-') ?></td>
                                 <td>
-                                    <?= date('d/m/Y', strtotime($game['finished'])) ?> <br>
-                                    <small><?= date('H:i:s', strtotime($game['finished'])) ?></small>
+                                    <?php if (!empty($game['finished'])): ?>
+                                        <?= date('d/m/Y', strtotime($game['finished'])) ?> <br>
+                                        <small><?= date('H:i:s', strtotime($game['finished'])) ?></small>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
