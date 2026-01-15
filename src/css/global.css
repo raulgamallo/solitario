@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;700&display=swap');
+
+:root {
+    --felt: #0f6b3d;
+    --felt-dark: #0a4629;
+    --felt-glow: #2fbf71;
+    --card-front: #0e4a2b;
+    --card-border: #d9e2d2;
+    --accent-gold: #f5d364;
+    --accent-light: #c5e8d2;
+    --text-strong: #f4f7f5;
+    --text-muted: #c6d3c0;
+    --shadow-strong: 0 18px 55px rgba(0, 0, 0, 0.35);
+    --shadow-soft: 0 8px 25px rgba(0, 0, 0, 0.2);
+    --success: #7ed889;
+    --danger: #ff6b6b;
+    --header-height: 76px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+    background: radial-gradient(circle at 20% 20%, #126b3c, #0a3c24 48%, #072919 100%);
+    color: var(--text-strong);
+    min-height: 100vh;
+    padding: var(--header-height) 0 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    background: linear-gradient(135deg, var(--accent-gold), #f8e7a6);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: var(--shadow-strong);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button.ghost {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-strong);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: none;
+}
+
+button.primary {
+    background: linear-gradient(135deg, var(--felt-glow), #7ed889);
+    color: #0c2b19;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+header.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    background: linear-gradient(120deg, rgba(15, 107, 61, 0.96), rgba(10, 70, 41, 0.94));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(10px) saturate(140%);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 50%;
+}
+
+.icon-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    box-shadow: 0 0 12px rgba(245, 211, 100, 0.6);
+}
+
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 25% 25%, #f8e7a6, #c5e8d2 65%, #0a4629 100%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2), 0 10px 25px rgba(0, 0, 0, 0.25);
+    animation: slow-spin 18s linear infinite;
+}
+
+.eyebrow {
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--accent-light);
+    margin: 0;
+}
+
+.muted {
+    color: var(--text-muted);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(10, 59, 33, 0.5);
+    color: var(--text-strong);
+    padding: 12px 14px;
+    font-size: 15px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--felt-glow);
+    box-shadow: 0 0 0 3px rgba(47, 191, 113, 0.25);
+}
+
+@keyframes slow-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

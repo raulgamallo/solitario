@@ -53,4 +53,3 @@ class Postgres
 }
 
 $postgres = new Postgres("postgres", getenv("POSTGRES_USER"), getenv("POSTGRES_DB"), getenv("POSTGRES_PASSWORD"));
-$postgres->connect();

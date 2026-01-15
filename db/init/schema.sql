@@ -1,7 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE users (
-	id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+	uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 	email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(64) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE games (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_uuid UUID NOT NULL,
     movements BIGINT NOT NULL,
     started TIMESTAMPTZ NOT NULL DEFAULT NOW(),

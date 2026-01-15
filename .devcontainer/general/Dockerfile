@@ -1,7 +1,7 @@
 FROM fedora:latest
 
 # General
-RUN	dnf install -y sudo git curl wget unzip zip nano tmux bash-completion procps dnf-plugins-core
+RUN	dnf install -y sudo git curl wget unzip zip nano tmux bash-completion procps dnf-plugins-core openssl composer
 
 # Update
 RUN dnf update -y
