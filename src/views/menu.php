@@ -27,9 +27,15 @@ require_once __DIR__ . '/../middleware/auth.php';
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="chip chip-main">★</div>
-                <div class="chip chip-secondary"></div>
-                <div class="chip chip-tertiary"></div>
+                <div class="profile-hero-wrapper">
+                    <?php if (!empty($currentUser->pfp)): ?>
+                        <img src="<?= htmlspecialchars($currentUser->pfp) ?>" alt="Tu perfil" class="profile-hero-img">
+                    <?php else: ?>
+                        <div class="profile-hero-placeholder">
+                            <?= strtoupper(substr($currentUser->username, 0, 1)) ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </section>
 

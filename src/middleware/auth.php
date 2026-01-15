@@ -25,15 +25,20 @@ try {
 
     // 4. (Recomendado) Verificar que el usuario sigue existiendo en la DB
     $postgres->connect();
-    $userCheck = $postgres->query("SELECT uuid FROM users WHERE uuid = '{$decoded->uuid}' LIMIT 1");
+    $userCheck = $postgres->query("SELECT uuid, email, username, pfp FROM users WHERE uuid = '{$decoded->uuid}' LIMIT 1");
     $postgres->disconnect();
 
     if (!$userCheck) {
         throw new Exception("Usuario no encontrado en la base de datos");
     }
 
-    // Guardamos los datos del usuario para usarlos en la vista si es necesario
-    $currentUser = $decoded;
+    // Refresh user data with latest from DB
+    $currentUser = (object) [
+        'uuid' => $userCheck[0]['uuid'],
+        'email' => $userCheck[0]['email'],
+        'username' => $userCheck[0]['username'],
+        'pfp' => $userCheck[0]['pfp'] ?? null
+    ];
 
     // REFRESH COOKIE (Sliding Expiration)
     // Extend session for another 15 minutes from NOW
