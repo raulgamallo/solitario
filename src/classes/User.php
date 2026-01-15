@@ -22,14 +22,14 @@ final readonly class UserRegisterDTO
 final readonly class UserLoginDTO
 {
     public function __construct(
-        public string $email,
+        public string $identifier, // Changed from email to identifier (can be email or username)
         public string $password
     ) {}
 
     public static function fromRequest(array $data): self
     {
         return new self(
-            email: htmlspecialchars(trim($data['email'] ?? '')),
+            identifier: htmlspecialchars(trim($data['email'] ?? '')), // Input name is still 'email' in form for now, or change to 'identifier'
             password: trim($data['password'] ?? '')
         );
     }

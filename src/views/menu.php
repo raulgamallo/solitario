@@ -1,5 +1,5 @@
 <?php
-// require_once __DIR__ . '/../middleware/auth.php';
+require_once __DIR__ . '/../middleware/auth.php';
 ?>
 
 <!DOCTYPE html>
@@ -23,13 +23,19 @@
                 <p class="muted">Elige tu siguiente movimiento y mantén el ritmo de la partida.</p>
                 <div class="hero-actions">
                     <button id="playButton" class="primary">Jugar ahora</button>
-                    <button class="ghost">Ranking</button>
+                    <button id="rankingButton" class="ghost">Ranking</button>
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="chip chip-main">★</div>
-                <div class="chip chip-secondary"></div>
-                <div class="chip chip-tertiary"></div>
+                <div class="profile-hero-wrapper">
+                    <?php if (!empty($currentUser->pfp)): ?>
+                        <img src="<?= htmlspecialchars($currentUser->pfp) ?>" alt="Tu perfil" class="profile-hero-img">
+                    <?php else: ?>
+                        <div class="profile-hero-placeholder">
+                            <?= strtoupper(substr($currentUser->username, 0, 1)) ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </section>
 
@@ -42,7 +48,7 @@
             <article class="menu-card">
                 <h3>Ranking</h3>
                 <p>Consulta tu posición y mejora tu marca personal.</p>
-                <button class="ghost">Ver ranking</button>
+                <button id="rankingButtonSecondary" class="ghost">Ver ranking</button>
             </article>
         </section>
     </main>
@@ -53,7 +59,12 @@
         document.getElementById("playButtonSecondary").addEventListener("click", function() {
             window.location.href = "game.php";
         });
+        document.getElementById("rankingButton").addEventListener("click", function() {
+            window.location.href = "ranking.php";
+        });
+        document.getElementById("rankingButtonSecondary").addEventListener("click", function() {
+            window.location.href = "ranking.php";
+        });
     </script>
 </body>
-
 </html>
