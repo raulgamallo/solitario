@@ -52,21 +52,3 @@ BEGIN
     RETURN new_game_id;
 END;
 $$ LANGUAGE plpgsql;
-
--- CREATE OR REPLACE FUNCTION ranking()
--- RETURNS TABLE(user_uuid UUID, total_movements BIGINT) AS $$
--- BEGIN
---     RETURN QUERY
---     SELECT
---         u.id,
---         SUM(g.movements)::BIGINT AS total_movements
---     FROM
---         users u
---     JOIN
---         games g ON u.id = g.user_uuid
---     GROUP BY
---         u.id
---     ORDER BY
---         total_movements ASC;
--- END;
--- $$ LANGUAGE plpgsql;
