@@ -1,0 +1,112 @@
+.ranking-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    color: #1a1a1a;
+    backdrop-filter: blur(10px);
+}
+
+.ranking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.ranking-header h1 {
+    margin: 0;
+    color: var(--felt-dark);
+    font-size: 2rem;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: var(--felt);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.back-btn:hover {
+    color: var(--felt-glow);
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.ranking-table th {
+    background: var(--felt-dark);
+    color: #fff;
+    padding: 1.25rem 1rem;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.ranking-table th:hover {
+    background: var(--felt);
+}
+
+.ranking-table th a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ranking-table td {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    color: #444;
+    transition: background-color 0.2s;
+}
+
+.ranking-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.ranking-table tbody tr:hover td {
+    background-color: var(--accent-light);
+    color: var(--felt-dark);
+    font-weight: 500;
+}
+
+.ranking-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Specific column styles */
+.ranking-table td:first-child {
+    font-weight: 700;
+    color: var(--felt);
+    width: 80px;
+    text-align: center;
+}
+.ranking-table th:first-child {
+    text-align: center;
+}
+
+.ranking-table td small {
+    color: #777;
+    font-size: 0.85em;
+}

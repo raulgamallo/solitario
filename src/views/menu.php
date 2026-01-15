@@ -1,5 +1,5 @@
 <?php
-// require_once __DIR__ . '/../middleware/auth.php';
+require_once __DIR__ . '/../middleware/auth.php';
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +23,7 @@
                 <p class="muted">Elige tu siguiente movimiento y mantén el ritmo de la partida.</p>
                 <div class="hero-actions">
                     <button id="playButton" class="primary">Jugar ahora</button>
-                    <button class="ghost">Ranking</button>
+                    <button id="rankingButton" class="ghost">Ranking</button>
                 </div>
             </div>
             <div class="hero-visual">
@@ -42,7 +42,7 @@
             <article class="menu-card">
                 <h3>Ranking</h3>
                 <p>Consulta tu posición y mejora tu marca personal.</p>
-                <button class="ghost">Ver ranking</button>
+                <button id="rankingButtonSecondary" class="ghost">Ver ranking</button>
             </article>
         </section>
     </main>
@@ -53,7 +53,12 @@
         document.getElementById("playButtonSecondary").addEventListener("click", function() {
             window.location.href = "game.php";
         });
+        document.getElementById("rankingButton").addEventListener("click", function() {
+            window.location.href = "ranking.php";
+        });
+        document.getElementById("rankingButtonSecondary").addEventListener("click", function() {
+            window.location.href = "ranking.php";
+        });
     </script>
 </body>
-
 </html>

@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/../middleware/auth.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,5 +13,4 @@
 <body>
     <?php include __DIR__ . '/../components/header.php'; ?>
 </body>
-
 </html>

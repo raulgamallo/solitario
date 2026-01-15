@@ -50,6 +50,14 @@ class Postgres
 
         return pg_fetch_all($result);
     }
+
+    public function escapeLiteral(string $data): string
+    {
+        if (!$this->connection) {
+            throw new Exception("No active database connection.");
+        }
+        return pg_escape_string($this->connection, $data);
+    }
 }
 
 $postgres = new Postgres("postgres", getenv("POSTGRES_USER"), getenv("POSTGRES_DB"), getenv("POSTGRES_PASSWORD"));

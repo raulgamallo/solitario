@@ -4,54 +4,87 @@ require __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . '/../classes/User.php';
 
 use Firebase\JWT\JWT;
+use Dotenv\Dotenv;
+
+// Initialize Dotenv if needed
+if (!getenv('JWT_SECRET')) {
+    $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+    $dotenv->load();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $errors = [];
     try {
         $userRegister = UserRegisterDTO::fromRequest($_POST);
-        // TODO: Validate values
+        
+        // Basic validation
+        if (empty($userRegister->email) || empty($userRegister->username) || empty($userRegister->password)) {
+             $errors[] = "Todos los campos son obligatorios.";
+        }
 
-        // TODO: Check if image folder exists
-        $uploadDir = __DIR__ . "/../public/pfp/";
+        // Check if image folder exists
+        $uploadDir = __DIR__ . "/../assets/pfp/";
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
 
-        // TODO: Validate pfp
+        // Validate pfp
         $pfp = $_FILES["pfp"] ?? null;
+        $destination = null;
         if (isset($pfp) && $pfp['error'] === UPLOAD_ERR_OK) {
+             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+             if (!in_array($pfp['type'], $allowedTypes)) {
+                 $errors[] = "Formato de imagen no válido.";
+             }
         }
 
         if (empty($errors)) {
-            // TODO: Save user to DB
+            // Save user to DB
+            global $postgres;
             $postgres->connect();
-            $query = "INSERT INTO users (email, username, password_hash) VALUES ('{$userRegister->email}', '{$userRegister->username}', '{$userRegister->password}') RETURNING uuid";
-            $result = $postgres->query($query);
-            $postgres->disconnect();
-            $uuid = $query[0]['uuid'];
-
-            // TODO: Save pfp with uuid as filename
-            if (isset($pfp) && $pfp['error'] === UPLOAD_ERR_OK) {
-                $destination = $uploadDir . $uuid . '.' . $fileExtension;
-                move_uploaded_file($fileTmpPath, $destination);
+            
+            // Check if user exists
+            $emailEscaped = $postgres->escapeLiteral($userRegister->email);
+            $check = $postgres->query("SELECT uuid FROM users WHERE email = '$emailEscaped'");
+            if ($check && count($check) > 0) {
+                 throw new Exception("El email ya está registrado.");
             }
+            
+            $usernameEscaped = $postgres->escapeLiteral($userRegister->username);
+            $passwordHash = $userRegister->password; // Already hashed in DTO
 
-            // TODO: Create User instance
-            $user = new User($uuid, $userRegister->username, $userRegister->email, $destination ?? null);
+            $query = "INSERT INTO users (email, username, password_hash) VALUES ('{$emailEscaped}', '{$usernameEscaped}', '{$passwordHash}') RETURNING uuid";
+            $result = $postgres->query($query);
+            $uuid = $result[0]['uuid'];
 
-            // TODO: Create JWT and set it as cookie
+            // Save pfp with uuid as filename
+            if (isset($pfp) && $pfp['error'] === UPLOAD_ERR_OK) {
+                $ext = pathinfo($pfp['name'], PATHINFO_EXTENSION);
+                $filename = $uuid . '.' . $ext;
+                $destinationPath = $uploadDir . $filename;
+                if (move_uploaded_file($pfp['tmp_name'], $destinationPath)) {
+                    // Update user with pfp path
+                    $pfpWebPath = "/assets/pfp/" . $filename; // Web accessible path
+                    $postgres->query("UPDATE users SET pfp = '$pfpWebPath' WHERE uuid = '$uuid'");
+                    $destination = $pfpWebPath;
+                }
+            }
+            
+            $postgres->disconnect();
+
+            // Create JWT and set it as cookie
             $jwtSecret = getenv('JWT_SECRET');
             if (!$jwtSecret) {
                 throw new RuntimeException('JWT secret not configured.');
             }
 
             $issuedAt = time();
-            $expiresAt = $issuedAt + 3600;
+            $expiresAt = $issuedAt + (15 * 60); // 15 minutes
 
             $payload = [
-                'uuid' => $user->uuid,
-                'username' => $user->username,
-                'email' => $user->email,
+                'uuid' => $uuid,
+                'username' => $userRegister->username,
+                'email' => $userRegister->email,
                 'iat' => $issuedAt,
                 'exp' => $expiresAt,
             ];
@@ -66,11 +99,17 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             ]);
 
             header("Location: /views/menu.php");
+            exit;
         } else {
-            header("Location: /views/register.php");
+             // Redirect back with errors (could be improved with session errors)
+             $_SESSION['register_errors'] = $errors;
+             header("Location: /views/register.php");
+             exit;
         }
     } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
+        $errors[] = $e->getMessage();
+        $_SESSION['register_errors'] = $errors;
+        header("Location: /views/register.php");
         exit;
     }
 }
