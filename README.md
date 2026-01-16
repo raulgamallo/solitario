@@ -44,3 +44,4 @@ Podrás acceder a la app desde [http://localhost:3000](http://localhost:3000)
 ### Postgres
 Si estás creando un entorno nuevo, el container de Postgres se encargará de obtener los valores del .env y crear la base de datos y el usuario y contraseña correspondientes.
 
+https://www.figma.com/proto/Jez37MseIWTv0H4kK3Eaj7/solitario?page-id=0%3A1&node-id=3-130872&viewport=298%2C-1072%2C0.59&t=Tz0Yhln0DRCQvLDE-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=3%3A209&show-proto-sidebar=1
