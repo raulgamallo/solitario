@@ -10,23 +10,6 @@ session_start();
     <title>Register</title>
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/register.css">
-    <style>
-        .error-message {
-            background-color: rgba(255, 107, 107, 0.2);
-            border: 1px solid var(--danger);
-            color: #ff6b6b;
-            padding: 0.75rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-        .error-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-    </style>
 </head>
 
 <body class="auth-body register-page">
