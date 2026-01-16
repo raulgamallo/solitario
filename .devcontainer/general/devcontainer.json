@@ -4,7 +4,6 @@
   "service": "general",
   "workspaceFolder": "/workspace",
   "remoteUser": "root",
-  "updateContentCommand": "composer install -d src",
   "customizations": {
     "vscode": {
       "extensions": [

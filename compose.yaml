@@ -19,10 +19,19 @@ services:
       - postgres_data:/var/lib/postgresql:cached,rw
       - ./db/init:/docker-entrypoint-initdb.d:ro
 
+  composer:
+    image: composer:latest
+    container_name: composer
+    working_dir: /app
+    volumes:
+      - ./src:/app:cached,rw
+    command: install --no-interaction --prefer-dist
+
   php:
     build: ./docker/php
     container_name: php
     depends_on:
+      - composer
       - postgres
     env_file:
       - .env
